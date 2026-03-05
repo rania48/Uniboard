@@ -127,5 +127,55 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
+    // 4. Modal Logic
+    const addUserModal = document.getElementById('addUserModal');
+    const openModalBtn = document.querySelector('.btn-add');
+    const closeModalBtn = document.getElementById('closeModal');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const addUserForm = document.getElementById('addUserForm');
+
+    const toggleModal = (show) => {
+        addUserModal.style.display = show ? 'flex' : 'none';
+        if (!show) addUserForm.reset();
+    };
+
+    openModalBtn.addEventListener('click', () => toggleModal(true));
+    closeModalBtn.addEventListener('click', () => toggleModal(false));
+    cancelBtn.addEventListener('click', () => toggleModal(false));
+
+    // Close modal if clicking outside the content
+    window.addEventListener('click', (e) => {
+        if (e.target === addUserModal) toggleModal(false);
+    });
+
+    // Handle form submission
+    addUserForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById('email').value;
+        const formData = {
+            username: email, // Use email as username
+            full_name: document.getElementById('full_name').value,
+            email: email,
+            password: document.getElementById('password').value,
+            role: document.getElementById('role').value
+        };
+
+        try {
+            const result = await api.post('/user/create', formData);
+            if (result.message) {
+                // Success
+                toggleModal(false);
+                refreshData();
+                // Optional: show a success notification (if we had a toast system)
+            } else {
+                alert(result.error || 'Erreur lors de la création de l\'utilisateur');
+            }
+        } catch (error) {
+            console.error('Create user error:', error);
+            alert('Une erreur est survenue');
+        }
+    });
+
     refreshData();
 });
