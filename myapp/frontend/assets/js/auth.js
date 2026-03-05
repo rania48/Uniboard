@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (result.access_token) {
                 localStorage.setItem('token', result.access_token);
                 localStorage.setItem('user', JSON.stringify(result.user));
-                window.location.href = 'index.html';
+                window.location.href = 'dashboard_admin.html';
             } else {
                 alert(result.error || 'Erreur de connexion');
             }
