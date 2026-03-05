@@ -28,7 +28,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Fetch all users
         const allUsers = await api.get('/user/all');
         if (Array.isArray(allUsers)) {
-            allTable.innerHTML = allUsers.map(u => `
+            // Filter to keep only approved users
+            const approvedUsers = allUsers.filter(u => u.is_approved);
+
+            allTable.innerHTML = approvedUsers.map(u => `
                 <tr>
                     <td>
                         <div class="user-cell">
@@ -167,9 +170,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // Success
                 toggleModal(false);
                 refreshData();
-                // Optional: show a success notification (if we had a toast system)
             } else {
-                alert(result.error || 'Erreur lors de la création de l\'utilisateur');
+                const errorMsg = result.error || result.msg || 'Erreur lors de la création de l\'utilisateur';
+                alert(errorMsg);
+                if (errorMsg.toLowerCase().includes('token') || errorMsg.toLowerCase().includes('expired')) {
+                    // Force refresh/login if session issue
+                    console.log('Session expired, suggesting login');
+                }
             }
         } catch (error) {
             console.error('Create user error:', error);

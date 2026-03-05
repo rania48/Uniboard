@@ -8,7 +8,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    // 2. Update sidebar user info
+    // 2. Dynamize Date
+    const dateEl = document.getElementById('currentDate');
+    if (dateEl) {
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const today = new Date();
+        let dateString = today.toLocaleDateString('fr-FR', options);
+        dateString = dateString.charAt(0).toUpperCase() + dateString.slice(1);
+        dateEl.textContent = dateString;
+    }
+
+    // 3. Update sidebar user info
     if (user.username) {
         const usernameEl = document.querySelector('.user-meta div:first-child');
         const avatarEl = document.querySelector('.avatar-small');

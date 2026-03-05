@@ -11,12 +11,18 @@ const api = {
                 },
                 body: JSON.stringify(data)
             });
+
             const result = await response.json();
+
+            // Handle JWT standard 'msg' field if 'error' is missing
+            if (!result.message && !result.error && result.msg) {
+                result.error = result.msg;
+            }
+
             return result;
         } catch (error) {
             console.error('API Post Error:', error);
-            // Check if it's a CORS issue or server down
-            return { error: 'Erreur de communication avec le serveur. Vérifiez que le backend Flask est bien lancé sur le port 5000.' };
+            return { error: 'Erreur de communication avec le serveur. Vérifiez la connexion.' };
         }
     },
 
